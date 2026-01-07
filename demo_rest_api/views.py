@@ -6,13 +6,12 @@ from rest_framework import status
 
 import uuid
 
-# Simulación de base de datos local en memoria
 data_list = []
 
 # Datos de ejemplo
-data_list.append({'id': str(uuid.uuid4()), 'name': 'User01', 'email': 'user01@example.com', 'is_active': True})
-data_list.append({'id': str(uuid.uuid4()), 'name': 'User02', 'email': 'user02@example.com', 'is_active': True})
-data_list.append({'id': str(uuid.uuid4()), 'name': 'User03', 'email': 'user03@example.com', 'is_active': False})
+data_list.append({'id': str(uuid.uuid4()), 'name': 'eri28', 'email': 'erigutierrez@gmail.com', 'is_active': True})
+data_list.append({'id': str(uuid.uuid4()), 'name': 'dani16', 'email': 'danielvillamar@gmail.com', 'is_active': True})
+data_list.append({'id': str(uuid.uuid4()), 'name': 'vale09', 'email': 'valerianic09@gmail.com', 'is_active': False})
 
 
 class DemoRestApi(APIView):
@@ -86,11 +85,9 @@ class DemoRestApiItem(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Reemplazo completo (sin tocar id)
         item['name'] = data.get('name')
         item['email'] = data.get('email')
 
-        # Si mandan is_active, lo actualizamos; si no, lo dejamos igual
         if 'is_active' in data:
             item['is_active'] = bool(data.get('is_active'))
 
@@ -109,7 +106,6 @@ class DemoRestApiItem(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # No permitir cambiar el id
         if 'id' in data and str(data.get('id')) != str(item_id):
             return Response(
                 {'message': 'No se permite modificar el "id" del elemento.'},
