@@ -6,6 +6,10 @@ from rest_framework.authentication import TokenAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
+# Módulos requeridos por el punto 4.a
+from firebase_admin import db
+from datetime import datetime
+
 from .models import Task
 from .serializers import TaskSerializer
 
@@ -20,6 +24,15 @@ class LandingApiIndex(APIView):
             },
             status=status.HTTP_200_OK,
         )
+    def post(self, request):
+      data = request.data
+      ref = db.reference(f'{self.collection_name}')
+      current_time  = datetime.now()
+      custom_format = current_time.strftime("%d/%m/%Y, %I:%M:%S %p").lower().replace('am', 'a. m.').replace('pm', 'p. m.')
+      data.update({"timestamp": custom_format })
+      new_resource = ref.push(data)
+      return Response({"id": new_resource.key}, status=status.HTTP_201_CREATED)    
+        
 
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
