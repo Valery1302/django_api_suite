@@ -39,9 +39,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "homepage",
+    # DRF
     "rest_framework",
-    "demo_rest_api"
+    "rest_framework.authtoken",
+    "django_filters",
+
+    # apps
+    "homepage",
+    "demo_rest_api",
+    "landing_api",
     
 ]
 
@@ -125,3 +131,14 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, STATIC_URL),
 ]
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+}
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/homepage/"
+LOGOUT_REDIRECT_URL = "/homepage/"
