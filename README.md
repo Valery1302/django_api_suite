@@ -18,16 +18,6 @@ Task Manager Backend ofrece endpoints REST para:
 
 ---
 
-## ✅ Cumplimiento de rúbrica (35 pts)
-Este proyecto está organizado para cubrir los criterios evaluados:
-
-- **Homepage (5 pts)** → Portal principal con navegación hacia los módulos del backend.
-- **Demo REST API (10 pts)** → Endpoints de demostración para prácticas de métodos HTTP (GET/POST/PUT/PATCH/DELETE).
-- **Landing API (15 pts)** → API real del gestor de tareas (Tasks API) con operaciones CRUD.
-- **Despliegue (5 pts)** → Publicación del proyecto en PythonAnywhere (pendiente de enlace).
-
----
-
 ## 🧩 Módulos incluidos
 - **Homepage** → Página principal con accesos rápidos a la API y servicios.
 - **Demo REST API** → API de prueba para validar funcionamiento de métodos HTTP.
