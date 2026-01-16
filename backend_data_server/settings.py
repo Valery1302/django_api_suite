@@ -15,6 +15,9 @@ import os
 import firebase_admin
 from firebase_admin import credentials
 
+import firebase_admin
+from firebase_admin import credentials
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -142,14 +145,15 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.AllowAny",
     ],
 }
-#LOGIN_URL = "/login/"
-#LOGIN_REDIRECT_URL = "/homepage/"
-#LOGOUT_REDIRECT_URL = "/homepage/"
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/homepage/"
+LOGOUT_REDIRECT_URL = "/homepage/"
 
-# Coloque la ruta relativa al archivo con la clave privada
-FIREBASE_CREDENTIALS_PATH = credentials.Certificate("secrets/landing-key.json")
+FIREBASE_KEY_PATH = os.path.join(BASE_DIR, 'secrets', 'landing-key.json')
 
-# Inicialice la conexión con el Realtime Database con la clave privada y la URL de referencia
-firebase_admin.initialize_app(FIREBASE_CREDENTIALS_PATH, {
-   'databaseURL': 'https://djnago-api-suite-default-rtdb.firebaseio.com/'
-})
+# 2. Inicialización (con validación para evitar errores de duplicidad)
+if not firebase_admin._apps:
+    cred = credentials.Certificate(FIREBASE_KEY_PATH)
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': 'https://django-61338-default-rtdb.firebaseio.com/' 
+    })
