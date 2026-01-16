@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import os
 
+import firebase_admin
+from firebase_admin import credentials
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -142,3 +145,12 @@ REST_FRAMEWORK = {
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/homepage/"
 LOGOUT_REDIRECT_URL = "/homepage/"
+
+FIREBASE_KEY_PATH = os.path.join(BASE_DIR, 'secrets', 'landing-key.json')
+
+# 2. Inicialización (con validación para evitar errores de duplicidad)
+if not firebase_admin._apps:
+    cred = credentials.Certificate(FIREBASE_KEY_PATH)
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': 'https://django-61338-default-rtdb.firebaseio.com/' 
+    })

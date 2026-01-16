@@ -1,11 +1,7 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import LandingApiIndex, TaskViewSet
-
-router = DefaultRouter()
-router.register(r"tasks", TaskViewSet, basename="tasks")
+from .views import LandingAPI
 
 urlpatterns = [
-    path("index/", LandingApiIndex.as_view(), name="landing_api_index"),
-    path("", include(router.urls)),
+    #path('firebase/',views.LandingAPI.as_view(), name='landing-firebase'),
+    path("index/", LandingAPI.as_view(), name="landing_api_index"),
 ]
