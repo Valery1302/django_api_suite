@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+import firebase_admin
+from firebase_admin import credentials
 
 import firebase_admin
 from firebase_admin import credentials
@@ -43,8 +45,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # DRF
+    "firebase_admin",
     "rest_framework",
-    "rest_framework.authtoken",
+    "rest_framework.authtoken",#m
     "django_filters",
 
     # apps
