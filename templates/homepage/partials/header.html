@@ -6,6 +6,7 @@
   <a href="/landing/api/tasks/">Tasks API</a>
 </p>
 <hr/>
+
 <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-10 py-3">
   <div class="flex items-center gap-4 text-[#111418]">
     <div class="size-4">
@@ -16,15 +17,38 @@
     <h2 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em]">Backend</h2>
   </div>
 
-  <div class="flex flex-1 justify-end gap-8">
+  <div class="flex flex-1 justify-end gap-8 items-center">
+    <!-- Links -->
     <div class="flex items-center gap-9">
       <a class="text-[#111418] text-sm font-medium leading-normal" href="/demo/rest/api/index/">Demo REST API</a>
-    </div>
-    <div class="flex items-center gap-9">
       <a class="text-[#111418] text-sm font-medium leading-normal" href="/landing/api/index/">Landing API</a>
-    </div>
-    <div class="flex items-center gap-9">
       <a class="text-[#111418] text-sm font-medium leading-normal" href="/landing/api/tasks/">Tasks</a>
+    </div>
+
+    <!-- Auth section -->
+    <div class="flex items-center gap-4">
+      {% if user.is_authenticated %}
+        <span class="text-sm text-gray-700">
+          {{ user.username }}
+        </span>
+
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-black transition"
+          >
+            Logout
+          </button>
+        </form>
+      {% else %}
+        <a
+          href="{% url 'login' %}"
+          class="rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-black transition"
+        >
+          Login
+        </a>
+      {% endif %}
     </div>
   </div>
 </header>

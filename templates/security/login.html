@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,8 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -33,42 +33,34 @@
               Accede para ver tus tareas y utilizar las herramientas del backend.
             </p>
 
-            {% if form.errors %}
-              <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                Usuario o contraseña incorrectos. Intenta otra vez.
-              </div>
+            {% if form.non_field_errors %}
+
+            <div id="password_error_div"
+              class="flex items-center justify-center mb-4 py-3 bg-red-100 border-l-4 border-red-500 text-red-700 dark:border-red-400 dark:text-red-500"
+              role="alert">Invalid username or password.</div>
+
             {% endif %}
 
-            <form method="post" class="space-y-4">
+            <form method="post" action="{% url 'login' %}" class="space-y-4">
+
               {% csrf_token %}
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                <input
-                  type="text"
-                  name="username"
-                  value="{{ form.username.value|default:'' }}"
-                  required
+                <input type="text" name="username" value="{{ form.username.value|default:'' }}" required
                   class="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-gray-900"
-                  placeholder="Ej: admin"
-                />
+                  placeholder="Ej: admin" />
               </div>
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  required
+                <input type="password" name="password" required
                   class="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-gray-900"
-                  placeholder="••••••••"
-                />
+                  placeholder="••••••••" />
               </div>
 
-              <button
-                type="submit"
-                class="w-full rounded-lg bg-gray-900 px-4 py-2 font-medium text-white hover:bg-black transition"
-              >
+              <button type="submit"
+                class="w-full rounded-lg bg-gray-900 px-4 py-2 font-medium text-white hover:bg-black transition">
                 Entrar
               </button>
             </form>
@@ -88,4 +80,5 @@
     </div>
   </div>
 </body>
+
 </html>

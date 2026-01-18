@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from landing_api.models import Task
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def index(request):
     tasks = []
     if request.user.is_authenticated:
