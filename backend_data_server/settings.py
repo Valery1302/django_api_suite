@@ -14,9 +14,8 @@ from pathlib import Path
 import os
 import firebase_admin
 from firebase_admin import credentials
-
-import firebase_admin
-from firebase_admin import credentials
+#import pymysql
+#pymysql.install_as_MySQLdb()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -103,6 +102,7 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
 
 
 # Password validation
