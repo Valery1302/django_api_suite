@@ -1,39 +1,67 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status
 from firebase_admin import db
+import firebase_admin
 from datetime import datetime
+import os
 
 class LandingAPI(APIView):
-    
-    # c. Agregue el atributo name y collection_name
+
     name = "Landing API"
-    collection_name = "responses"  # Sustituye con el nombre de tu colección en Firebase
+    collection_name = "responses"
+
+    def _check_firebase(self):
+        # 1) Firebase inicializado
+        if not firebase_admin._apps:
+            return Response(
+                {"error": "Firebase no está inicializado (firebase_admin.initialize_app no corrió)."},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
+
+        # 2) Database URL (necesaria para firebase_admin.db.reference)
+        if not os.getenv("FIREBASE_DB_URL"):
+            return Response(
+                {"error": "Falta la variable FIREBASE_DB_URL en Railway (Realtime Database URL)."},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
+
+        return None  # todo OK
 
     def get(self, request):
+        fail = self._check_firebase()
+        if fail:
+            return fail
 
-      # Referencia a la colección
-      ref = db.reference(f'{self.collection_name}')
+        try:
+            ref = db.reference(self.collection_name)
+            data = ref.get() or []   # si no hay nada, devuelve algo válido
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": "Error accediendo a Firebase", "detail": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
-      # get: Obtiene todos los elementos de la col ección
-      data = ref.get()
-
-      # Devuelve un arreglo JSON
-      return Response(data, status=status.HTTP_200_OK)
-    
     def post(self, request):
+        fail = self._check_firebase()
+        if fail:
+            return fail
 
-      data = request.data
+        try:
+            data = request.data.copy()
 
-      # Referencia a la colección
-      ref = db.reference(f'{self.collection_name}')
+            ref = db.reference(self.collection_name)
 
-      current_time  = datetime.now()
-      custom_format = current_time.strftime("%d/%m/%Y, %I:%M:%S %p").lower().replace('am', 'a. m.').replace('pm', 'p. m.')
-      data.update({"timestamp": custom_format })
+            current_time  = datetime.now()
+            custom_format = current_time.strftime("%d/%m/%Y, %I:%M:%S %p").lower().replace('am', 'a. m.').replace('pm', 'p. m.')
+            data.update({"timestamp": custom_format})
 
-      # push: Guarda el objeto en la colección
-      new_resource = ref.push(data)
+            new_resource = ref.push(data)
+            return Response({"id": new_resource.key}, status=status.HTTP_201_CREATED)
 
-      # Devuelve el id del objeto guardado
-      return Response({"id": new_resource.key}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response(
+                {"error": "Error guardando en Firebase", "detail": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
