@@ -49,5 +49,5 @@ Ejemplo de body (JSON o x-www-form-urlencoded):
 ```json
 {
   "username": "admin",
-  "password": "tu_password"
+  "password": "admin123"
 }
