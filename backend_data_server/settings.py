@@ -39,8 +39,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["*"]  # para salir del paso en clase
-
+ALLOWED_HOSTS = [".up.railway.app"]
 
 
 # Application definition
@@ -181,14 +180,15 @@ LOGIN_REDIRECT_URL = "/homepage/"
 LOGOUT_REDIRECT_URL = "/homepage/"
 
 
-FIREBASE_KEY_JSON = os.getenv("FIREBASE_KEY_JSON")
-
-LOCAL_FIREBASE_KEY_PATH = os.path.join(BASE_DIR, "secrets", "landing-key.json")
+FIREBASE_DB_URL = os.getenv("FIREBASE_DB_URL")  
 
 if not firebase_admin._apps:
-    if FIREBASE_KEY_JSON:  # Railway (env var)
-        cred = credentials.Certificate(json.loads(FIREBASE_KEY_JSON))
-        firebase_admin.initialize_app(cred)
-    elif os.path.exists(LOCAL_FIREBASE_KEY_PATH):  # Local
-        cred = credentials.Certificate(LOCAL_FIREBASE_KEY_PATH)
-        firebase_admin.initialize_app(cred)
+    firebase_key_json = os.getenv("FIREBASE_KEY_JSON")
+
+    if firebase_key_json:
+        cred_dict = json.loads(firebase_key_json)
+        cred = credentials.Certificate(cred_dict)
+
+        firebase_admin.initialize_app(cred, {
+            "databaseURL": FIREBASE_DB_URL
+        })
