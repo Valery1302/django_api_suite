@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+import json 
 import firebase_admin
 from firebase_admin import credentials
 import pymysql
@@ -166,17 +167,14 @@ LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/homepage/"
 LOGOUT_REDIRECT_URL = "/homepage/"
 
-FIREBASE_DATABASE_URL = os.getenv("FIREBASE_DATABASE_URL", "")
 
-#  JSON completo en una variable (RECOMENDADO para Railway)
-FIREBASE_SERVICE_ACCOUNT_JSON = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON", "")
+FIREBASE_KEY_JSON = os.environ.get("FIREBASE_KEY_JSON")
+FIREBASE_KEY_PATH = os.environ.get("FIREBASE_KEY_PATH", "secrets/landing-key.json")
 
 if not firebase_admin._apps:
-    if FIREBASE_SERVICE_ACCOUNT_JSON:
-        cred = credentials.Certificate(json.loads(FIREBASE_SERVICE_ACCOUNT_JSON))
-        firebase_admin.initialize_app(cred, {"databaseURL": FIREBASE_DATABASE_URL})
+    if FIREBASE_KEY_JSON:
+        cred = credentials.Certificate(json.loads(FIREBASE_KEY_JSON))
     else:
-        # (local): archivo en secrets/
-        FIREBASE_KEY_PATH = os.path.join(BASE_DIR, "secrets", "landing-key.json")
         cred = credentials.Certificate(FIREBASE_KEY_PATH)
-        firebase_admin.initialize_app(cred, {"databaseURL": FIREBASE_DATABASE_URL})
+
+    firebase_admin.initialize_app(cred)
