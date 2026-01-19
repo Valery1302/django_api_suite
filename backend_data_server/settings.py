@@ -32,7 +32,7 @@ SECRET_KEY = "django-insecure-@+^81g2h@4t6#91ec(0gw0t_%jb=i%m63qe9z4(q=l9yxlhn=s
 DEBUG = False
 
 CSRF_TRUSTED_ORIGINS = [
-  "https://*.up.railway.app", # Solo si utiliza Codespaces
+  "https://*.up.railway.app", 
   "https://localhost:8000",
   "http://127.0.0.1:8000"
 ]
@@ -167,7 +167,13 @@ FIREBASE_KEY_PATH = os.path.join(BASE_DIR, 'secrets', 'landing-key.json')
 
 # 2. Inicialización (con validación para evitar errores de duplicidad)
 if not firebase_admin._apps:
-    cred = credentials.Certificate(FIREBASE_KEY_PATH)
+    if os.environ.get("FIREBASE_KEY_JSON"):
+        #  Railway / Producción: usa la variable de entorno
+        cred_dict = json.loads(os.environ["FIREBASE_KEY_JSON"])
+        cred = credentials.Certificate(cred_dict)
+    else:
+        cred = credentials.Certificate(FIREBASE_KEY_PATH)
+
     firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://django-61338-default-rtdb.firebaseio.com/' 
+        'databaseURL': 'https://django-61338-default-rtdb.firebaseio.com/'
     })
