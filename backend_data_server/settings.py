@@ -29,15 +29,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-@+^81g2h@4t6#91ec(0gw0t_%jb=i%m63qe9z4(q=l9yxlhn=s"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
 CSRF_TRUSTED_ORIGINS = [
+  "https://*.railway.app",
   "https://*.up.railway.app", 
   "https://localhost:8000",
   "http://127.0.0.1:8000"
 ]
 
-ALLOWED_HOSTS = ['.up.railway.app']
+DEBUG = os.getenv("DEBUG", "False") == "True"
+
+ALLOWED_HOSTS = ["*"]  # para salir del paso en clase
+
+
 
 # Application definition
 
@@ -49,7 +53,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # DRF
-    "firebase_admin",
     "rest_framework",
     "rest_framework.authtoken",#m
     "django_filters",
@@ -163,17 +166,17 @@ LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/homepage/"
 LOGOUT_REDIRECT_URL = "/homepage/"
 
-FIREBASE_KEY_PATH = os.path.join(BASE_DIR, 'secrets', 'landing-key.json')
+FIREBASE_DATABASE_URL = os.getenv("FIREBASE_DATABASE_URL", "")
 
-# 2. Inicialización (con validación para evitar errores de duplicidad)
+#  JSON completo en una variable (RECOMENDADO para Railway)
+FIREBASE_SERVICE_ACCOUNT_JSON = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON", "")
+
 if not firebase_admin._apps:
-    if os.environ.get("FIREBASE_KEY_JSON"):
-        #  Railway / Producción: usa la variable de entorno
-        cred_dict = json.loads(os.environ["FIREBASE_KEY_JSON"])
-        cred = credentials.Certificate(cred_dict)
+    if FIREBASE_SERVICE_ACCOUNT_JSON:
+        cred = credentials.Certificate(json.loads(FIREBASE_SERVICE_ACCOUNT_JSON))
+        firebase_admin.initialize_app(cred, {"databaseURL": FIREBASE_DATABASE_URL})
     else:
+        # (local): archivo en secrets/
+        FIREBASE_KEY_PATH = os.path.join(BASE_DIR, "secrets", "landing-key.json")
         cred = credentials.Certificate(FIREBASE_KEY_PATH)
-
-    firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://django-61338-default-rtdb.firebaseio.com/'
-    })
+        firebase_admin.initialize_app(cred, {"databaseURL": FIREBASE_DATABASE_URL})
