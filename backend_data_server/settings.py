@@ -15,8 +15,7 @@ import os
 import json 
 import firebase_admin
 from firebase_admin import credentials
-import pymysql
-pymysql.install_as_MySQLdb()
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
