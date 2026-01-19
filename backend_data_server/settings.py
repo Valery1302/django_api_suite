@@ -14,8 +14,8 @@ from pathlib import Path
 import os
 import firebase_admin
 from firebase_admin import credentials
-#import pymysql
-#pymysql.install_as_MySQLdb()
+import pymysql
+pymysql.install_as_MySQLdb()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,17 +29,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-@+^81g2h@4t6#91ec(0gw0t_%jb=i%m63qe9z4(q=l9yxlhn=s"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 CSRF_TRUSTED_ORIGINS = [
-  "https://*.app.github.dev", # Solo si utiliza Codespaces
+  "https://*.up.railway.app", # Solo si utiliza Codespaces
   "https://localhost:8000",
   "http://127.0.0.1:8000"
 ]
 
-ALLOWED_HOSTS = [
-  "*",
-]
+ALLOWED_HOSTS = ['.up.railway.app']
 
 # Application definition
 
@@ -65,6 +63,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Agregar WhiteNoise al middleware (debe ir después de SecurityMiddleware)
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -97,12 +96,15 @@ WSGI_APPLICATION = "backend_data_server.wsgi.application"
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('MYSQLDATABASE'),
+        'USER': os.environ.get('MYSQLUSER'),
+        'PASSWORD': os.environ.get('MYSQLPASSWORD'),
+        'HOST': os.environ.get('MYSQLHOST'),
+        'PORT': os.environ.get('MYSQLPORT'),
+     }
 }
-
 
 
 # Password validation
@@ -144,6 +146,11 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, STATIC_URL),
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
