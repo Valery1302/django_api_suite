@@ -169,12 +169,11 @@ LOGOUT_REDIRECT_URL = "/homepage/"
 
 
 FIREBASE_KEY_JSON = os.environ.get("FIREBASE_KEY_JSON")
-FIREBASE_KEY_PATH = os.environ.get("FIREBASE_KEY_PATH", "secrets/landing-key.json")
 
 if not firebase_admin._apps:
     if FIREBASE_KEY_JSON:
         cred = credentials.Certificate(json.loads(FIREBASE_KEY_JSON))
+        firebase_admin.initialize_app(cred)
     else:
-        cred = credentials.Certificate(FIREBASE_KEY_PATH)
-
-    firebase_admin.initialize_app(cred)
+        cred = credentials.Certificate("secrets/landing-key.json")
+        firebase_admin.initialize_app(cred)
